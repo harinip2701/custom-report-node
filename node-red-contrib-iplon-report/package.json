@@ -1,0 +1,25 @@
+{
+  "name": "node-red-contrib-iplon-report",
+  "version": "1.1.0",
+  "main": "report.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "node-red": {
+    "nodes": {
+      "iplon-report": "report.js"
+    }
+  },
+  "author": "harini",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "fs": "^0.0.1-security",
+    "nodemailer": "^6.9.13",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "puppeteer": "^22.6.2"
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "description": ""
+}

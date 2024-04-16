@@ -1,0 +1,93 @@
+    <script type="text/javascript">
+        RED.nodes.registerType("iplon-report",{
+            category: 'function',
+            color: '#95b474',
+            defaults: {
+                name: { value: "", type:"text"},
+                username: { value: "",type:"text"},
+                password: { value: "" ,type:"text"},
+                urls: { value: [], type:"array" } // Change to an array to store multiple URLs
+            },
+        
+            inputs: 1,
+            outputs: 1,
+            icon: "file.svg",
+            label: function() {
+                return this.name || "iplon-report";
+            },
+            oneditprepare: function() {
+                // Retrieve the saved username and password and set them in the input fields
+                $("#node-input-username").val(this.username || "");
+                $("#node-input-password").val(this.password || "");
+    
+                // Retrieve the URLs from the node's configuration and set them in the input fields
+                var urls = this.urls;
+                if (urls && urls.length > 0) {
+                    urls.forEach(function(url) {
+                        addUrlInput(url);
+                    });
+                } else {
+                    addUrlInput(""); // Add an empty input field if no URLs are stored
+                }
+            },
+
+            oneditsave: function() {
+                // Retrieve username and password from input fields
+                var username = $("#node-input-username").val() || "";
+                var password = $("#node-input-password").val() || "";
+    
+                // Store the URLs in an array
+                var urls = [];
+                $(".url-input").each(function() {
+                    urls.push($(this).val());
+                });
+    
+                // Create a message object containing the inputs
+                var msg = {
+                    payload: {
+                        username: username,
+                        password: password,
+                        urls: urls
+                    }
+                };
+                this.send(msg);        
+            },
+        });
+    </script>
+
+<script type="text/javascript">
+        // Function to add a new URL input field
+        function addUrlInput(url) {
+            var urlInputsDiv = $("#urlInputs");
+            var numInputs = urlInputsDiv.find('.url-input').length;
+            var newInput = $('<div class="form-row">' +
+                                '<label for="node-input-url' + numInputs + '"><i class="fa fa-link"></i> URL ' + numInputs + '</label>' +
+                                '<input type="text" class="url-input" placeholder="URL ' + numInputs + '" value="' + (url || "") + '">' +
+                            '</div>');
+            urlInputsDiv.append(newInput);
+        }
+    
+        // Function to remove a URL input field
+        function removeUrlInput() {
+            var urlInputsDiv = $("#urlInputs");
+            urlInputsDiv.find('.form-row:last-child').remove(); // Remove the last URL input field
+        }
+    </script>
+    
+    <script type="text/html" data-template-name="iplon-report">
+        <div class="form-row">
+            <label for="node-input-username"><i class="fa fa-tag"></i> Username</label>
+            <input type="text" id="node-input-username">
+        </div>
+        <div class="form-row">
+            <label for="node-input-password"><i class="fa fa-tag"></i> Password</label>
+            <input type="text" id="node-input-password">
+        </div>
+        <!-- Container for input fields -->
+        <div id="urlInputs"></div>
+    
+        <button type="button" onclick="addUrlInput()">Add URL</button> 
+        <span style="margin-right: 250px;"></span> <!-- Button to dynamically add more input fields -->
+        <button type="button" onclick="removeUrlInput()">Remove URLs</button> <!-- Button to remove the last URL input field -->
+    </script>
+    
